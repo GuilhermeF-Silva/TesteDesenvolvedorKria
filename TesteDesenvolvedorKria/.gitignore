@@ -1,0 +1,67 @@
+﻿# Visual Studio
+.vscode/
+.vs/
+.vscode/*
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored if NuGet restore is used
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# npm packages
+node_modules/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code files
+.vscode/*
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Web Files
+project.lock.json
+artifacts/
+*.dll
+*.exe
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.cache
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Mac OS Generated files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
