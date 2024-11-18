@@ -19,7 +19,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             AutomaticaOCR_PLACA
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {
@@ -35,9 +35,9 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             return tipoCobranca == (int)TipoCobrancaEfetuadaEnum.Manual;
         }
 
-        public static bool ValidaSeCobrancaIsAutomatica(string cobranca)
+        public static bool ValidaSeCobrancaIsAutomatica(int tipoCobranca)
         {
-            return cobranca.Equals(TipoCobrancaEfetuadaEnum.AutomaticaTAG.ToString()) || cobranca.Equals(TipoCobrancaEfetuadaEnum.AutomaticaOCR_PLACA.ToString());
+            return tipoCobranca == (int)TipoCobrancaEfetuadaEnum.AutomaticaTAG || tipoCobranca ==(int)TipoCobrancaEfetuadaEnum.AutomaticaOCR_PLACA;
         }
     }
 }

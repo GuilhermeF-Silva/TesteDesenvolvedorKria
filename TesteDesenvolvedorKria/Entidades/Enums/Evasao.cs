@@ -13,13 +13,8 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             Sim = 1, 
             Não
         }
-
-        private enum MotivoIsencao
-        {
-            Sim = 1,
-            Não
-        }
-        public static string RealizarConversaoParaEnvio(int id)
+        
+        public static string RealizarDePara(int id)
         {
             return id switch
             {

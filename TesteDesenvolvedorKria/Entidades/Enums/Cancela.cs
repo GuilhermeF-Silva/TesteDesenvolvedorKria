@@ -20,7 +20,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             CasoFortuitoOuForcaMaior,
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {
@@ -40,9 +40,9 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
         {
             if (ValidaSeLiberacaoIsDiferenteDeNao(liberacaoCancela))
             {
-                return valorMonetario.ToString();
+                return string.Empty;
             }
-            return string.Empty;
+            return valorMonetario;
         }
 
 

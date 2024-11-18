@@ -15,7 +15,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             Moto
         }
 
-        public static string RealizarConversaoParaEnvio(int quantidadeEixos, int rodagem)
+        public static string RealizarDePara(int quantidadeEixos, int rodagem)
         {
             return (quantidadeEixos, rodagem) switch
             {
@@ -25,9 +25,19 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             };
         }
 
-        public static bool ValidaSeTipoVeiculoIsPasseioOuMoto(int tipoVeiculo)
+        public static bool ValidaSeTipoVeiculoIsComercial(int quantidadeEixos, int rodagem)
         {
-            return tipoVeiculo == (int)TipoVeiculoEnum.Passeio || tipoVeiculo == (int)TipoVeiculoEnum.Moto;
+            return quantidadeEixos != 2 && rodagem >= 2 ;
+        }
+
+        public static bool ValidaSeTipoVeiculoIsMoto(int quantidadeEixos, int rodagem)
+        {
+            return quantidadeEixos == 2 && rodagem == 1;
+        }
+
+        public static bool ValidaSeTipoVeiculoIsPasseio(int quantidadeEixos, int rodagem)
+        {
+            return quantidadeEixos == 2 && rodagem == 2;
         }
     }
 }

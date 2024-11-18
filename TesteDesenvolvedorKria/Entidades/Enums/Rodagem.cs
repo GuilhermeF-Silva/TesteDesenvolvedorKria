@@ -10,11 +10,11 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
     {
         private enum RodagemEnum
         { 
-            Simples,
+            Simples = 1,
             Dupla
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {

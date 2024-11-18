@@ -14,7 +14,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             Não
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {
@@ -24,7 +24,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             };
         }
 
-        private static bool ValidaSePossuemAlgumEixoSuspenso(int eixoSuspenso)
+        public static bool ValidaSePossuemAlgumEixoSuspenso(int eixoSuspenso)
         {
             return eixoSuspenso == (int)EixoSuspensoEnum.Sim;
         }

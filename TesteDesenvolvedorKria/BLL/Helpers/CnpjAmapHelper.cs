@@ -9,7 +9,7 @@ namespace TesteDesenvolvedorKria.BLL.Helpers
 {
     public static class CnpjAmapHelper
     {
-        public static bool TrataCnpjAmap(string tipoCobranca, string? cnpjAmap)
+        public static string? TrataCnpjAmap(int tipoCobranca, string? cnpjAmap)
         {
             if (Cobranca.ValidaSeTipoCobrancaIsManual(tipoCobranca))
             { 

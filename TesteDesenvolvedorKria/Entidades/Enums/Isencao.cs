@@ -14,7 +14,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             Não
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {
@@ -24,18 +24,12 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             };
         }
 
-        private static bool ValidaSeIsIsento (int isencao)
+        public static bool ValidaSeIsIsento (int isencao)
         {
             return isencao == (int)IsentoEnum.Sim;
         }
 
-        public static string TrataMotivoIsencao(string motivoIsencao, int isencao)
-        {
-            if (ValidaSeIsIsento(isencao))
-            {
-                return motivoIsencao;
-            }
-            return string.Empty;
-        }
+       
+       
     }
 }

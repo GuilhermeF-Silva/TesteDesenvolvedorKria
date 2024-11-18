@@ -18,7 +18,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             NaoIdentificado
         }
 
-        public static string? RealizarConversaoParaEnvio(int? id)
+        public static string? RealizarDePara(int? id)
         {
             return id switch
             {
@@ -27,6 +27,15 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
                 3 => EnumHelper.GetDisplayName(VeiculoCarregadoEnum.NaoIdentificado),
                 _ => null,
             };
+        }
+
+        public static string? TrataVeiculoCarregao(string? veiculoCarregado, int quantidadeDeEixos, int rodagem)
+        {
+            if (!TipoVeiculo.ValidaSeTipoVeiculoIsComercial(quantidadeDeEixos, rodagem))
+            { 
+                return string.Empty;
+            }
+            return veiculoCarregado;
         }
 
 

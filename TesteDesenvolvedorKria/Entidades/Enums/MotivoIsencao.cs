@@ -21,7 +21,7 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             IsentoContrato = 4
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {
@@ -33,9 +33,18 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             }; ;
         }
 
-        public static bool ValidaSeMotivoIsLeiResolucaoOuJudicial(string motivoIsencao)
+        public static bool ValidaSeMotivoIsLeiResolucaoOuJudicial(int motivoInsencao)
         {
-            return motivoIsencao.Equals(MotivoIsencaoEnum.IsentoPorLeiResolucao.ToString()) || motivoIsencao.Equals(MotivoIsencaoEnum.IsentoJudicial.ToString());
+            return motivoInsencao == (int)MotivoIsencaoEnum.IsentoPorLeiResolucao || motivoInsencao == (int)MotivoIsencaoEnum.IsentoJudicial;
         }
+        public static string TrataMotivoIsencao(string motivoIsencao, int isencao)
+        {
+            if (Isencao.ValidaSeIsIsento(isencao))
+            {
+                return motivoIsencao;
+            }
+            return string.Empty;
+        }
+
     }
 }

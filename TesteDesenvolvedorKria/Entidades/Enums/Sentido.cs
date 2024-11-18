@@ -10,11 +10,11 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
     {
         private enum SentidoEnum
         {
-            Crescente,
+            Crescente = 1,
             Decrescente
         }
 
-        public static string RealizarConversaoParaEnvio(int id)
+        public static string RealizarDePara(int id)
         {
             return id switch
             {

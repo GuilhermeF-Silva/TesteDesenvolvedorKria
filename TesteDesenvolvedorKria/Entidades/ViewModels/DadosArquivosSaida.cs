@@ -5,7 +5,11 @@ namespace TesteDesenvolvedorKria.Entidades.ViewModels
 {
     public class DadosArquivosSaida
     {
-        
+        public string Candidato { get; set; } = "Guilherme Ferreira da Silva";
+        public string DataReferencia { get; set; } = DateTime.Now.Date.ToString("dd/MM/yyyy");
+        public string Motivo { get; set; } = "1";
+        public string? NumeroArquivo { get; set; }
+        public List<Registros>? Registros { get; set; }
     }
 
     public class Registros(string guid, string codigoPracaPedagio, string codigoCabine, string instante, string sentido,

@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entidades\NovaPasta\**" />
+    <EmbeddedResource Remove="Entidades\NovaPasta\**" />
+    <None Remove="Entidades\NovaPasta\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <None Update="appsettings.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
@@ -18,10 +24,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Entidades\NovaPasta\" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
 </Project>
