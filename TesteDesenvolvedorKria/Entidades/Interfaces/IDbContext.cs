@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace TesteDesenvolvedorKria.DAO.Conexao
+namespace TesteDesenvolvedorKria.Entidades.Interfaces
 {
     public interface IDbContext
     {

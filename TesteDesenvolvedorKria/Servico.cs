@@ -4,8 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Data;
-using TesteDesenvolvedorKria.BLL;
-using TesteDesenvolvedorKria.DAO.Conexao;
+using TesteDesenvolvedorKria.Entidades.Interfaces;
 
 public class Servico(ILogger<Servico> _logger, IDbContext _bancoDeDados, ITransacoesPedagiosBLL _transacoesPedagiosBLL) : BackgroundService
 {
@@ -37,7 +36,7 @@ public class Servico(ILogger<Servico> _logger, IDbContext _bancoDeDados, ITransa
         {
             _logger.LogInformation("KEEP ALIVE", DateTimeOffset.Now);
             await Task.Run(() => _transacoesPedagiosBLL.IniciarProcessamento(), stoppingToken);
-            await Task.Delay(500000, stoppingToken);
+            await Task.Delay(20000, stoppingToken);
         }
     }
 

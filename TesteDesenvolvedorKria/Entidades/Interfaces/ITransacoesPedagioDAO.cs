@@ -1,6 +1,6 @@
 ﻿using TesteDesenvolvedorKria.Entidades.DTOs;
 
-namespace TesteDesenvolvedorKria.DAO.TransacoesPedagiosDAO
+namespace TesteDesenvolvedorKria.Entidades.Interfaces
 {
     public interface ITransacoesPedagioDAO
     {

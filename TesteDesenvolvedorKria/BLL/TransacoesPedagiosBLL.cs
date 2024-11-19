@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TesteDesenvolvedorKria.BLL.Helpers;
-using TesteDesenvolvedorKria.DAO.TransacoesPedagiosDAO;
 using TesteDesenvolvedorKria.Entidades.DTOs;
 using TesteDesenvolvedorKria.Entidades.Enums;
 using TesteDesenvolvedorKria.Entidades.ViewModels;
@@ -13,32 +12,46 @@ using System.Net.Http;
 using static TesteDesenvolvedorKria.Entidades.ViewModels.DadosArquivosSaida;
 using MongoDB.Bson.IO;
 using Azure;
+using System.Globalization;
+using Microsoft.Extensions.Logging;
+using DnsClient.Internal;
+using TesteDesenvolvedorKria.Entidades.Interfaces;
 
 namespace TesteDesenvolvedorKria.BLL
 {
-    public class TransacoesPedagiosBLL(ITransacoesPedagioDAO _transacoesPedagioDAO) : ITransacoesPedagiosBLL
+    public class TransacoesPedagiosBLL(ITransacoesPedagioDAO _transacoesPedagioDAO, ILogger<Servico> _logger) : ITransacoesPedagiosBLL
     {
+        int numeroDeArquivos = 0;
+
         public async Task IniciarProcessamento()
         {
+            _logger.LogInformation("Obtendo registros de transação de pedágio para envio...");
             IEnumerable<TabTransacoes> listaDeTransacoesDePedagio = await _transacoesPedagioDAO.ObterRegistros();
 
             if (listaDeTransacoesDePedagio.Any())
             {
+                _logger.LogInformation("Tratando Registros para envio...");
                 List<Registros> listaDeRegistrosSaida = RetornaTransacoesDePedagioTratadosParaEnvio(listaDeTransacoesDePedagio);
+                
                 var listeEmLotes = DividirLista(listaDeRegistrosSaida, 1000);
 
-                foreach (var item in listeEmLotes)
+                for (int i = 0; i < listeEmLotes.Count; i++)
                 {
-                   DadosArquivosSaida arquivosSaida =  MontaJsonParaEnvio(item);
-                   await EnviarArquivosParaAPI(arquivosSaida);
-                }          
+                    numeroDeArquivos += listeEmLotes[i].Count;
+                    DadosArquivosSaida arquivosSaida = EnvioApiBLL.MontaJsonParaEnvio(listeEmLotes[i], numeroDeArquivos);
+                    _logger.LogInformation($"Enviando lote número: {i + 1}/{listeEmLotes.Count}");
+                    await EnvioApiBLL.EnviarArquivosParaAPI(arquivosSaida);
+                }
+
+                _logger.LogInformation($"Registros Enviados com Sucesso!");
             }
         }
 
-        public static List<Registros> RetornaTransacoesDePedagioTratadosParaEnvio(IEnumerable<TabTransacoes> listaDeTransacoesDePedagio)
+        public List<Registros> RetornaTransacoesDePedagioTratadosParaEnvio(IEnumerable<TabTransacoes> listaDeTransacoesDePedagio)
         {
             List<Registros> listaDeRegistrosSaida = [];
             List<TabTransacoes> listaDeRegistrosInvalidos= [];
+
 
             foreach (var transacaoDePedagio in listaDeTransacoesDePedagio)
             {
@@ -50,9 +63,9 @@ namespace TesteDesenvolvedorKria.BLL
                         guid: Guid.NewGuid().ToString("D").ToLower(),
                         codigoPracaPedagio: transacaoDePedagio.CodigoPracaPedagio,
                         codigoCabine: transacaoDePedagio.CodigoCabine.ToString(),
-                        instante: transacaoDePedagio.Instante,
+                        instante: Convert.ToDateTime(transacaoDePedagio.Instante).ToString("dd/MM/yyyy HH:mm:ss zzz", CultureInfo.InvariantCulture),
                         sentido: Sentidos.RealizarDePara(transacaoDePedagio.Sentido),
-                        tipoVeiculo: TipoVeiculo.RealizarDePara(transacaoDePedagio.QuantidadeEixosVeiculo, transacaoDePedagio.Rodagem),
+                        tipoVeiculo: TipoVeiculo.RealizarDePara(double.Parse(transacaoDePedagio.MultiplicadorTarifa.Trim(), CultureInfo.InvariantCulture),transacaoDePedagio.QuantidadeEixosVeiculo, transacaoDePedagio.Rodagem),
                         quantidadeEixosVeiculo: transacaoDePedagio.QuantidadeEixosVeiculo.ToString(),
                         rodagem: Rodagem.RealizarDePara(transacaoDePedagio.Rodagem),
                         isento: Isencao.RealizarDePara(transacaoDePedagio.Isento),
@@ -67,7 +80,7 @@ namespace TesteDesenvolvedorKria.BLL
                         valorArrecadado: Cancela.TrataValorArrecadado(UtilsBLL.FormatarValorMonetario(transacaoDePedagio.ValorArrecadado), transacaoDePedagio.LiberacaoCancela),
                         cnpjAmap: CnpjAmapHelper.TrataCnpjAmap(transacaoDePedagio.TipoCobranca, transacaoDePedagio.CnpjAmap),
                         multiplicadorTarifa: UtilsBLL.FormatarValorMultiplicadorTarifa(transacaoDePedagio.MultiplicadorTarifa),
-                        veiculoCarregado: VeiculoCarregado.TrataVeiculoCarregao(VeiculoCarregado.RealizarDePara(transacaoDePedagio.VeiculoCarregado), transacaoDePedagio.QuantidadeEixosVeiculo, transacaoDePedagio.Rodagem),
+                        veiculoCarregado: VeiculoCarregado.TrataVeiculoCarregao(VeiculoCarregado.RealizarDePara(transacaoDePedagio.VeiculoCarregado), transacaoDePedagio.QuantidadeEixosVeiculo, transacaoDePedagio.Rodagem, double.Parse(transacaoDePedagio.MultiplicadorTarifa.Trim(), CultureInfo.InvariantCulture)),
                         idtag: IdTagHelper.TrataIdTAG(transacaoDePedagio.TipoCobranca, transacaoDePedagio.IdTag));
 
                         listaDeRegistrosSaida.Add(registroSaida);
@@ -77,16 +90,19 @@ namespace TesteDesenvolvedorKria.BLL
                         listaDeRegistrosInvalidos.Add(transacaoDePedagio);               
                     }
                 }
-                catch (Exception ex)
+                catch 
                 {
 
-                    throw new Exception(ex?.InnerException?.Message);
+                    listaDeRegistrosInvalidos.Add(transacaoDePedagio);
                 }  
             }
             if (listaDeRegistrosInvalidos.Count != 0)
             {
-                Console.Error.WriteLine($"Lista de registros que nao seguem as regras da ANTT: {string.Join(", ", listaDeRegistrosInvalidos)}");
-
+                _logger.LogError($"Lista de registros que nao seguem as regras da ANTT:");
+                foreach (var item in listaDeRegistrosInvalidos)
+                {
+                    _logger.LogError($"Id: {item.Id}");
+                }
             }
 
             return listaDeRegistrosSaida;
@@ -100,38 +116,6 @@ namespace TesteDesenvolvedorKria.BLL
                 .Select(grupo => grupo.Select(x => x.item).ToList())
                 .ToList();
         }
-        public static DadosArquivosSaida MontaJsonParaEnvio(List<Registros> listaDeRegistrosSaida)
-        {
-            var arquivosSaida = new DadosArquivosSaida()
-            {
-                NumeroArquivo = listaDeRegistrosSaida.Count.ToString(),
-                Registros = listaDeRegistrosSaida
-            };
-
-            return arquivosSaida;
-        }
-
-        public static async Task EnviarArquivosParaAPI(DadosArquivosSaida arquivosSaida)
-        {
-            Console.WriteLine(arquivosSaida);
-            //using (HttpClient client = new())
-            //{
-            //    string url = "https://contratacaosirapi.azurewebsites.net/Candidato/PublicarDesafio";
-
-            //    string jsonPayload = System.Text.Json.JsonSerializer.Serialize(arquivosSaida);
-            //    var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-            //    try
-            //    {
-            //        //var response = await client.PostAsync(url, content);
-            //        //Console.WriteLine(await response.Content.ReadAsStringAsync());
-            //        Console.WriteLine(arquivosSaida);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine($"Ocorreu um erro ao tentar enviar os dados para a api: {ex.Message}");
-            //    }
-            //}
-        }
+       
     } 
 }

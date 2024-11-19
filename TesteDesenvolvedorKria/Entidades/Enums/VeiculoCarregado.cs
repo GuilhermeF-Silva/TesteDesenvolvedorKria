@@ -29,9 +29,9 @@ namespace TesteDesenvolvedorKria.Entidades.Enums
             };
         }
 
-        public static string? TrataVeiculoCarregao(string? veiculoCarregado, int quantidadeDeEixos, int rodagem)
+        public static string? TrataVeiculoCarregao(string? veiculoCarregado, int quantidadeDeEixos, int rodagem, double multiplicadorTarifa)
         {
-            if (!TipoVeiculo.ValidaSeTipoVeiculoIsComercial(quantidadeDeEixos, rodagem))
+            if (!TipoVeiculo.ValidaSeTipoVeiculoIsComercial(quantidadeDeEixos, rodagem, multiplicadorTarifa))
             { 
                 return string.Empty;
             }

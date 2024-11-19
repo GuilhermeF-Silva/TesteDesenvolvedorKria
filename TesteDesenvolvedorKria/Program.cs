@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.EventLog;
 using TesteDesenvolvedorKria.BLL;
 using TesteDesenvolvedorKria.DAO.Conexao;
 using TesteDesenvolvedorKria.DAO.TransacoesPedagiosDAO;
+using TesteDesenvolvedorKria.Entidades.Interfaces;
 
 namespace TesteDesenvolvedorKria
 {

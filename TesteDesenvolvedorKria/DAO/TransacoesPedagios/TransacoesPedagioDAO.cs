@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TesteDesenvolvedorKria.DAO.Conexao;
 using TesteDesenvolvedorKria.Entidades.DTOs;
+using TesteDesenvolvedorKria.Entidades.Interfaces;
 
 namespace TesteDesenvolvedorKria.DAO.TransacoesPedagiosDAO
 {
@@ -22,6 +22,7 @@ namespace TesteDesenvolvedorKria.DAO.TransacoesPedagiosDAO
                 var filter = Builders<BsonDocument>.Filter.Empty;
                 IEnumerable<TabTransacoes> transacoesDePedagios = await _tabTransacoes.Find(_ => true).ToListAsync();
 
+                _logger.LogInformation("Registros obtidos com sucesso!");
                 return transacoesDePedagios;
             }
             catch (Exception ex)

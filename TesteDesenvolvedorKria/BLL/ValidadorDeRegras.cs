@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace TesteDesenvolvedorKria.BLL
 
             if (ValidaObrigatoriedadeVeiculoCarregado(transacoesPedagio)) 
             { 
-                return false; //VERIFICAR SE VALE A PENA CONSIDERAR OS EIXOS SUSPENSOS
+                return false; 
             }
 
             if (ValidadObrigatoriedadeIdTAG(transacoesPedagio))
@@ -34,7 +35,7 @@ namespace TesteDesenvolvedorKria.BLL
                 return false; 
             }
 
-            return ValidaValoresDeTarifa(transacoesPedagio);
+            return true;
         }
 
         private static bool ValidaObrigatoriedadeDaPlaca(TabTransacoes transacoesPedagio)
@@ -58,9 +59,9 @@ namespace TesteDesenvolvedorKria.BLL
 
         private static bool ValidaObrigatoriedadeVeiculoCarregado(TabTransacoes transacoesPedagio)
         {
-            if (!TipoVeiculo.ValidaSeTipoVeiculoIsComercial(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem) && transacoesPedagio.VeiculoCarregado is null)
+            if (!TipoVeiculo.ValidaSeTipoVeiculoIsComercial(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem, double.Parse(transacoesPedagio.MultiplicadorTarifa.Trim(), CultureInfo.InvariantCulture)) && transacoesPedagio.VeiculoCarregado is null)
             {
-                return true; //VERIFICAR SE VALE A PENA CONSIDERAR OS EIXOS SUSPENSOS
+                return true; 
             }
             return false;
         }
@@ -70,28 +71,6 @@ namespace TesteDesenvolvedorKria.BLL
             if (Cobranca.ValidaSeCobrancaIsAutomatica((int)transacoesPedagio.TipoCobranca!) && !Evasao.ValidaSeHouveEvasao(transacoesPedagio.Evasao) && string.IsNullOrEmpty(transacoesPedagio.IdTag))
             {
                 return true;
-            }
-            return false;
-        }
-
-        private static bool ValidaValoresDeTarifa(TabTransacoes transacoesPedagio)
-        {
-            if (TipoVeiculo.ValidaSeTipoVeiculoIsMoto(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem) && !Isencao.ValidaSeIsIsento(transacoesPedagio.Isento))
-            {
-                return Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) == Convert.ToDecimal("0.5");
-            }
-            if (TipoVeiculo.ValidaSeTipoVeiculoIsMoto(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem) && Isencao.ValidaSeIsIsento(transacoesPedagio.Isento))
-            {
-                return Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) == Convert.ToDecimal("0.0");
-            }
-            if (TipoVeiculo.ValidaSeTipoVeiculoIsPasseio(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem))
-            {
-                return Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) == Convert.ToDecimal("1.0") && Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) == Convert.ToDecimal("1.5") && Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) == Convert.ToDecimal("2.0");
-            }
-
-            if (TipoVeiculo.ValidaSeTipoVeiculoIsComercial(transacoesPedagio.QuantidadeEixosVeiculo, transacoesPedagio.Rodagem))
-            {
-                return Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) >= Convert.ToDecimal("2.0") && Convert.ToDecimal(transacoesPedagio.MultiplicadorTarifa) <= Convert.ToDecimal("20.0");
             }
             return false;
         }
